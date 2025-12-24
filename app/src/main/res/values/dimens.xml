@@ -28,12 +28,58 @@
     <dimen name="block_elevation">0dp</dimen>
 
     <!-- Bottom bar -->
-    <dimen name="bottom_bar_height">72dp</dimen>
+    <dimen name="bottom_bar_height">85dp</dimen>
     <dimen name="bottom_item_width">64dp</dimen>
     <dimen name="center_gap_width">56dp</dimen>
+    <dimen name="nav_item_top_padding">4dp</dimen>
 
     <!-- FAB -->
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_lift">18dp</dimen>
     <dimen name="nav_icon_button_size">36dp</dimen>
+
+    <!-- статистика отступы -->
+    <dimen name="top_padding_statistics">16.dp</dimen>
+    <dimen name="space">8dp</dimen>
+
+    <!-- Online схемы: отступы и расстояния (Pinterest layout) -->
+    <dimen name="online_grid_padding_h">16dp</dimen>
+    <dimen name="online_grid_padding_v">12dp</dimen>
+    <dimen name="online_grid_item_spacing">12dp</dimen>
+
+    <!-- Внутренние отступы плитки -->
+    <dimen name="online_tile_padding">10dp</dimen>
+
+    <!-- Profile: ширина стека как в Home -->
+    <dimen name="profile_stack_width">@dimen/center_block_width</dimen>
+    <dimen name="profile_stack_gap">@dimen/center_block_gap</dimen>
+
+    <!-- Высоты полей -->
+    <dimen name="profile_field_height">56dp</dimen>
+    <dimen name="profile_field_hpad">14dp</dimen>
+
+    <!-- Лейбл слева -->
+    <dimen name="profile_label_width">88dp</dimen>
+
+    <!-- Фото-экран: ширина карточки -->
+    <dimen name="photo_card_hpad">18dp</dimen>
+    <dimen name="photo_buttons_stack_width">@dimen/center_block_width</dimen>
+
+    <!-- Аватар -->
+    <dimen name="profile_avatar_size">90dp</dimen>
+
+    <!-- Насколько аватар заезжает на баннер (половина аватара) -->
+    <dimen name="profile_avatar_overlap">45dp</dimen>
+
+    <!-- Отступ под баннером, чтобы контент не налез -->
+    <dimen name="profile_banner_bottom_space">45dp</dimen>
+
+    <!-- Bottom bar: индикатор выбранной иконки -->
+    <dimen name="nav_selected_indicator_width">22dp</dimen>
+    <dimen name="nav_selected_indicator_height">3dp</dimen>
+    <dimen name="nav_selected_indicator_radius">2dp</dimen>
+    <dimen name="nav_selected_indicator_gap_under_icon">2dp</dimen>
+
+    <dimen name="nav_icon_text_gap">2dp</dimen>
+
 </resources>

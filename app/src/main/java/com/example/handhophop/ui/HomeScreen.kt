@@ -7,9 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-
 import androidx.compose.material.icons.outlined.Home
-
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,14 +21,19 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import coil.compose.AsyncImage
 import com.example.handhophop.R
 
-import androidx.compose.foundation.layout.ColumnScope
-
-
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navController: NavHostController,
+    selectedVm: SelectedSchemeViewModel
+) {
     val bg = colorResource(R.color.bg_beige)
+    val selectedUrl by selectedVm.selectedUrl.collectAsState()
 
     Box(
         modifier = Modifier
@@ -40,18 +43,15 @@ fun HomeScreen() {
         BackgroundPattern()
 
         Column(modifier = Modifier.fillMaxSize()) {
-            TopBanner()
-
-            CenterContent()
-
-            BottomBar(modifier = Modifier.fillMaxWidth())
+            TopBanner(title = stringResource(R.string.home_title_incomplete))
+            CenterContent(navController, selectedUrl)
+            BottomBar(navController = navController, modifier = Modifier.fillMaxWidth())
         }
     }
 }
 
 @Composable
-private fun BackgroundPattern() {
-    // Если bg_pattern отсутствует — закомментируй этот composable целиком
+fun BackgroundPattern() {
     val alpha = runCatching { dimensionResource(R.dimen.bg_pattern_alpha).value }.getOrElse { 0.22f }
 
     Image(
@@ -64,7 +64,9 @@ private fun BackgroundPattern() {
 }
 
 @Composable
-private fun TopBanner() {
+fun TopBanner(
+    title: String
+) {
     val h = dimensionResource(R.dimen.top_banner_height)
     val bottomPad = dimensionResource(R.dimen.top_banner_bottom_padding)
 
@@ -89,7 +91,7 @@ private fun TopBanner() {
             contentAlignment = Alignment.BottomCenter
         ) {
             Text(
-                text = stringResource(R.string.home_title_incomplete),
+                text = title,
                 color = textColor,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
@@ -98,9 +100,13 @@ private fun TopBanner() {
     }
 }
 
+
 @Composable
-private fun ColumnScope.CenterContent() {
-    val sidePad = dimensionResource(id = R.dimen.screen_side_padding)
+private fun ColumnScope.CenterContent(
+    navController: NavHostController,
+    selectedUrl: String?
+) {
+    val sidePad = dimensionResource(R.dimen.screen_side_padding)
 
     Box(
         modifier = Modifier
@@ -109,12 +115,15 @@ private fun ColumnScope.CenterContent() {
             .padding(horizontal = sidePad),
         contentAlignment = Alignment.Center
     ) {
-        CenterStack3Blocks()
+        CenterStack3Blocks(navController, selectedUrl)
     }
 }
 
 @Composable
-private fun CenterStack3Blocks() {
+private fun CenterStack3Blocks(
+    navController: NavHostController,
+    selectedUrl: String?
+) {
     val w = dimensionResource(R.dimen.center_block_width)
     val gap = dimensionResource(R.dimen.center_block_gap)
 
@@ -122,14 +131,25 @@ private fun CenterStack3Blocks() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(gap)
     ) {
-        PreviewBlock(modifier = Modifier.width(w))
-        StatsButtonBlock(modifier = Modifier.width(w))
-        StartButtonBlock(modifier = Modifier.width(w))
+        PreviewBlock(modifier = Modifier.width(w), imageUrl = selectedUrl)
+
+        StatsButtonBlock(
+            modifier = Modifier.width(w),
+            onClick = { navController.navigate(Screen.Statistics.route) }
+        )
+
+        StartButtonBlock(
+            modifier = Modifier.width(w),
+            onClick = { navController.navigate(Screen.ShemeScreen.route) }
+        )
     }
 }
 
 @Composable
-private fun PreviewBlock(modifier: Modifier = Modifier) {
+private fun PreviewBlock(
+    modifier: Modifier = Modifier,
+    imageUrl: String?
+) {
     val r = dimensionResource(R.dimen.block_radius)
     val elevation0 = dimensionResource(R.dimen.block_elevation)
 
@@ -140,10 +160,6 @@ private fun PreviewBlock(modifier: Modifier = Modifier) {
     val innerColor = colorResource(R.color.card_beige_2)
     val textDark = colorResource(R.color.text_dark)
     val textMuted = colorResource(R.color.text_muted)
-
-    val painter = painterResource(R.drawable.project_preview)
-    val intrinsic: Size = painter.intrinsicSize
-    val aspect = if (intrinsic.width > 0f && intrinsic.height > 0f) intrinsic.width / intrinsic.height else 1f
 
     Card(
         modifier = modifier,
@@ -168,14 +184,27 @@ private fun PreviewBlock(modifier: Modifier = Modifier) {
                 colors = CardDefaults.cardColors(containerColor = innerColor),
                 elevation = CardDefaults.cardElevation(defaultElevation = elevation0)
             ) {
-                Image(
-                    painter = painter,
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(aspect)
-                )
+                if (imageUrl != null) {
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else {
+                    val painter = painterResource(R.drawable.project_preview)
+                    val intrinsic: Size = painter.intrinsicSize
+                    val aspect = if (intrinsic.width > 0f && intrinsic.height > 0f) intrinsic.width / intrinsic.height else 1f
+
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(aspect)
+                    )
+                }
             }
 
             Text(
@@ -189,7 +218,10 @@ private fun PreviewBlock(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun StatsButtonBlock(modifier: Modifier = Modifier) {
+private fun StatsButtonBlock(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     val h = dimensionResource(R.dimen.stats_button_height)
     val r = dimensionResource(R.dimen.block_radius)
     val elevation0 = dimensionResource(R.dimen.block_elevation)
@@ -197,38 +229,30 @@ private fun StatsButtonBlock(modifier: Modifier = Modifier) {
 
     val bg = colorResource(R.color.card_beige_2)
     val textDark = colorResource(R.color.text_dark)
-    val textMuted = colorResource(R.color.text_muted)
 
-    Card(
+    Button(
+        onClick = onClick,
         modifier = modifier.height(h),
         shape = RoundedCornerShape(r),
-        colors = CardDefaults.cardColors(containerColor = bg),
-        elevation = CardDefaults.cardElevation(defaultElevation = elevation0)
+        colors = ButtonDefaults.buttonColors(containerColor = bg),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = elevation0),
+        contentPadding = PaddingValues(horizontal = hPad)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = hPad),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.home_statistics),
-                color = textDark,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.weight(1f)
-            )
-            Icon(
-                imageVector = Icons.Outlined.Person,
-                contentDescription = null,
-                tint = textMuted
-            )
-        }
+        Text(
+            text = stringResource(R.string.home_statistics),
+            color = textDark,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
 @Composable
-private fun StartButtonBlock(modifier: Modifier = Modifier) {
+private fun StartButtonBlock(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     val h = dimensionResource(R.dimen.start_button_height)
     val r = dimensionResource(R.dimen.block_radius)
     val elevation0 = dimensionResource(R.dimen.block_elevation)
@@ -236,7 +260,7 @@ private fun StartButtonBlock(modifier: Modifier = Modifier) {
     val bg = colorResource(R.color.primary_brown)
 
     Button(
-        onClick = { /* фиктивно */ },
+        onClick = onClick,
         modifier = modifier.height(h),
         shape = RoundedCornerShape(r),
         colors = ButtonDefaults.buttonColors(containerColor = bg),
@@ -250,131 +274,4 @@ private fun StartButtonBlock(modifier: Modifier = Modifier) {
     }
 }
 
-private enum class BottomItem {
-    Home, Online, Add, Downloads, Profile
-}
-
-@Composable
-private fun BottomBar(modifier: Modifier = Modifier) {
-    val navBg = colorResource(R.color.nav_bg)
-    val icon = colorResource(R.color.nav_icon)
-    val iconActive = colorResource(R.color.nav_icon_active)
-    val fabBg = colorResource(R.color.fab_bg)
-
-    val barH = dimensionResource(R.dimen.bottom_bar_height)
-    val itemW = dimensionResource(R.dimen.bottom_item_width)
-    val centerGap = dimensionResource(R.dimen.center_gap_width)
-
-    val fabSize = dimensionResource(R.dimen.fab_size)
-    val fabLift = dimensionResource(R.dimen.fab_lift)
-
-    val iconBtnSize = dimensionResource(R.dimen.nav_icon_button_size)
-
-    var selected by remember { mutableStateOf(BottomItem.Home) }
-
-    Box(modifier = modifier) {
-        Surface(color = navBg) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(barH),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                NavItem(
-                    title = stringResource(R.string.nav_home),
-                    icon = Icons.Outlined.Home,
-                    selected = selected == BottomItem.Home,
-                    onClick = { selected = BottomItem.Home },
-                    activeColor = iconActive,
-                    inactiveColor = icon,
-                    width = itemW,
-                    iconButtonSize = iconBtnSize
-                )
-
-                NavItem(
-                    title = stringResource(R.string.nav_online),
-                    icon = Icons.Outlined.Person,
-                    selected = selected == BottomItem.Online,
-                    onClick = { selected = BottomItem.Online },
-                    activeColor = iconActive,
-                    inactiveColor = icon,
-                    width = itemW,
-                    iconButtonSize = iconBtnSize
-                )
-
-                Spacer(modifier = Modifier.width(centerGap))
-
-                NavItem(
-                    title = stringResource(R.string.nav_downloads),
-                    icon = Icons.Outlined.Person,
-                    selected = selected == BottomItem.Downloads,
-                    onClick = { selected = BottomItem.Downloads },
-                    activeColor = iconActive,
-                    inactiveColor = icon,
-                    width = itemW,
-                    iconButtonSize = iconBtnSize
-                )
-
-                NavItem(
-                    title = stringResource(R.string.nav_profile),
-                    icon = Icons.Outlined.Person,
-                    selected = selected == BottomItem.Profile,
-                    onClick = { selected = BottomItem.Profile },
-                    activeColor = iconActive,
-                    inactiveColor = icon,
-                    width = itemW,
-                    iconButtonSize = iconBtnSize
-                )
-            }
-        }
-
-        FloatingActionButton(
-            onClick = { selected = BottomItem.Add },
-            containerColor = fabBg,
-            contentColor = Color.White,
-            shape = CircleShape,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = -fabLift)
-                .size(fabSize)
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Add,
-                contentDescription = stringResource(R.string.nav_add)
-            )
-        }
-    }
-}
-
-@Composable
-private fun NavItem(
-    title: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    selected: Boolean,
-    onClick: () -> Unit,
-    activeColor: Color,
-    inactiveColor: Color,
-    width: androidx.compose.ui.unit.Dp,
-    iconButtonSize: androidx.compose.ui.unit.Dp
-) {
-    val tint = if (selected) activeColor else inactiveColor
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .width(width)
-            .fillMaxHeight()
-    ) {
-        IconButton(onClick = onClick, modifier = Modifier.size(iconButtonSize)) {
-            Icon(imageVector = icon, contentDescription = null, tint = tint)
-        }
-        Text(
-            text = title,
-            color = tint,
-            style = MaterialTheme.typography.labelSmall,
-            maxLines = 2
-        )
-    }
-}
+/* BottomBar / NavItem оставляю твоими (как у тебя сейчас) */

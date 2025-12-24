@@ -13,4 +13,9 @@
     <color name="nav_icon">#6B5A52</color>
     <color name="nav_icon_active">#3A2D26</color>
     <color name="fab_bg">#5B463B</color>
+
+    <color name="bar">#BD9C89</color>
+
+    <color name="nav_selected_indicator">#3A2A1B</color>
+
 </resources>
