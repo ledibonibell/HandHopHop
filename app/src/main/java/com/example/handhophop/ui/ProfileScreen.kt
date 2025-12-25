@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
 import com.example.handhophop.R
-import com.example.handhophop.data.ProfileState
 
 
 @Composable
@@ -96,7 +94,6 @@ fun ProfileScreen(navController: NavHostController) {
 
         Column(modifier = Modifier.fillMaxSize()) {
 
-            // ── ВЕРХ: баннер + аватар ─────────────────
             Box {
                 ProfileTopBanner()
 
@@ -111,21 +108,18 @@ fun ProfileScreen(navController: NavHostController) {
                 )
             }
 
-            // ⬇️ компенсация наложения
             Spacer(
                 modifier = Modifier.height(
                     dimensionResource(R.dimen.profile_banner_bottom_space)
                 )
             )
 
-            // ── ЦЕНТР: имя + поля ─────────────────────
             ProfileCenterContent(
-                navController = navController,
                 state = state,
                 onNameChange = { vm.update { s -> s.copy(name = it) } },
                 onLoginChange = { vm.update { s -> s.copy(login = it) } },
                 onEmailChange = { vm.update { s -> s.copy(email = it) } },
-                onPhoneChange = { vm.update { s -> s.copy(phone = it) } } // ✅ FIX
+                onPhoneChange = { vm.update { s -> s.copy(phone = it) } }
             )
 
             BottomBar(
@@ -139,7 +133,6 @@ fun ProfileScreen(navController: NavHostController) {
 
 @Composable
 private fun ColumnScope.ProfileCenterContent(
-    navController: NavHostController,
     state: ProfileState,
     onNameChange: (String) -> Unit,
     onLoginChange: (String) -> Unit,
@@ -160,7 +153,6 @@ private fun ColumnScope.ProfileCenterContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // ── ВЕРХ ЦЕНТРА: имя (остается под аватаром) ──
             Text(
                 text = state.name,
                 style = MaterialTheme.typography.titleLarge,
@@ -168,10 +160,8 @@ private fun ColumnScope.ProfileCenterContent(
                 color = colorResource(R.color.text_dark)
             )
 
-            // 🔽 свободное место до центра
             Spacer(modifier = Modifier.weight(0.7f))
 
-            // ── ЦЕНТР ЭКРАНА: ПОЛЯ ───────────────────────
             Column(
                 modifier = Modifier.width(w),
                 verticalArrangement = Arrangement.spacedBy(gap),
@@ -199,47 +189,8 @@ private fun ColumnScope.ProfileCenterContent(
                 )
             }
 
-            // 🔼 свободное место после центра
             Spacer(modifier = Modifier.weight(1.3f))
         }
-    }
-}
-
-
-
-@Composable
-private fun ProfileHeader(
-    avatarUri: String?,
-    title: String,
-    onAvatarClick: () -> Unit
-) {
-    val avatarSize = dimensionResource(R.dimen.profile_avatar_size)
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .size(avatarSize)
-                .clip(CircleShape)
-                .clickable(onClick = onAvatarClick),
-            contentAlignment = Alignment.Center
-        ) {
-            if (avatarUri != null) {
-                AsyncImage(
-                    model = avatarUri,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            } else {
-                Image(
-                    painter = painterResource(R.drawable.default_avatar),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
-        Text(title, style = MaterialTheme.typography.titleLarge)
     }
 }
 
@@ -274,7 +225,6 @@ private fun ProfileField(
                 .padding(horizontal = hPad),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Лейбл слева фиксированной ширины
             Text(
                 text = label,
                 color = labelColor,
@@ -282,7 +232,6 @@ private fun ProfileField(
                 modifier = Modifier.width(labelW)
             )
 
-            // Поле ввода справа (без рамки, как на твоих плашках)
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,

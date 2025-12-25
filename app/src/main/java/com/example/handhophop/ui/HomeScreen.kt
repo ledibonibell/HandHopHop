@@ -273,5 +273,3 @@ private fun StartButtonBlock(
         )
     }
 }
-
-/* BottomBar / NavItem оставляю твоими (как у тебя сейчас) */

@@ -1,4 +1,4 @@
-package com.example.handhophop.data
+package com.example.handhophop.ui
 
 import android.content.Context
 import androidx.datastore.preferences.core.*

@@ -15,11 +15,15 @@ sealed class Screen(val route: String) {
     object ProfilePhoto : Screen("profile_photo")
 }
 
+/**
+ * Навигация приложения.
+ *
+ * Содержит описание всех экранов и маршрутов.
+ * Использует Jetpack Navigation Compose.
+ */
 @Composable
 fun HandHophopNavigation() {
     val navController = rememberNavController()
-
-    // ✅ shared VM для выбранной схемы
     val selectedVm: SelectedSchemeViewModel = viewModel()
 
     NavHost(

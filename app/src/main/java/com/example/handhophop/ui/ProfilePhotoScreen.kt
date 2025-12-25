@@ -48,7 +48,7 @@ fun ProfilePhotoScreen(navController: NavHostController) {
                 onPick = {
                     picker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 },
-                onDone = { navController.popBackStack() } // <- вторую кнопку сделаешь сам
+                onDone = { navController.popBackStack() }
             )
 
             BottomBar(navController = navController, modifier = Modifier.fillMaxWidth())
@@ -133,7 +133,7 @@ private fun FlatCardButton(
     text: String,
     onClick: () -> Unit
 ) {
-    val h = dimensionResource(R.dimen.stats_button_height) // или свой dimen для фото-кнопок
+    val h = dimensionResource(R.dimen.stats_button_height)
     val r = dimensionResource(R.dimen.block_radius)
     val elevation0 = dimensionResource(R.dimen.block_elevation)
     val hPad = dimensionResource(R.dimen.button_h_padding)

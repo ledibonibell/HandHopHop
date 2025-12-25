@@ -17,6 +17,16 @@ data class ImageListState(
     val reachedEnd: Boolean = false
 )
 
+/**
+ * ViewModel экрана онлайн-схем.
+ *
+ * Отвечает за:
+ * - загрузку изображений из репозитория
+ * - хранение текущего списка схем
+ * - управление состоянием загрузки и ошибками
+ *
+ * Используется LazyVerticalStaggeredGrid.
+ */
 class OnlineSchemesViewModel(
     private val repo: ImageRepository = ImageRepository(NekoNetwork.api)
 ) : ViewModel() {

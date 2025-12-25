@@ -19,6 +19,12 @@ class ImageRepository(
     private val cache = mutableMapOf<Int, List<ImageItem>>()
     private var nextId: Int = 1
 
+    /**
+     * Запрашивает следующее изображение по id и пропускает:
+     * - HTTP ошибки (404/500)
+     * - любые рейтинги кроме "safe"
+     * Возвращает первый найденный safe-результат.
+     */
     private suspend fun loadNextSafeImage(): ImageItem {
         var attempts = 0
 

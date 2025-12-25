@@ -3,12 +3,18 @@ package com.example.handhophop.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.handhophop.data.ProfileRepository
-import com.example.handhophop.data.ProfileState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel профиля пользователя.
+ *
+ * Отвечает за:
+ * - состояние полей профиля (имя, логин, почта и т.д.)
+ * - сохранение данных в DataStore
+ * - восстановление состояния при запуске приложения
+ */
 class ProfileViewModel(app: Application) : AndroidViewModel(app) {
     private val repo = ProfileRepository(app.applicationContext)
 

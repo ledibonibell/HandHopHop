@@ -102,7 +102,6 @@ private fun OnlineSchemesMasonry(
                 }
             }
 
-            // хвост для подгрузки / ошибки
             item {
                 SideEffect {
                     if (!isLoading && !reachedEnd && items.isNotEmpty()) onNeedMore()
